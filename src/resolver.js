@@ -80,20 +80,16 @@ exports.tree = (block, options) => {
     value: `@hex.cidv2.eth-block.keccak_256.${blockHeader.parentHash}`,
   })
   paths.push({
-    path: 'uncleList',
+    path: 'uncles',
     value: `@hex.cidv2.eth-block-list.keccak_256.${blockHeader.uncleHash}`,
   })
   paths.push({
-    path: 'transactionTrie',
+    path: 'transactions',
     value: `@hex.cidv2.eth-tx-trie.keccak_256.${blockHeader.transactionsTrie}`,
   })
   paths.push({
-    path: 'transactionReceiptTrie',
+    path: 'transactionReceipts',
     value: `@hex.cidv2.eth-tx-receipt-trie.keccak_256.${blockHeader.receiptTrie}`,
-  })
-  paths.push({
-    path: 'author',
-    value: `@hex.cidv2.eth-account.keccak_256.${blockHeader.coinbase}`,
   })
   paths.push({
     path: 'state',
