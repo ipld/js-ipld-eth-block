@@ -6,7 +6,6 @@ const dagEthBlock = require('../src')
 const resolver = dagEthBlock.resolver
 const IpfsBlock = require('ipfs-block')
 const EthBlockHeader = require('ethereumjs-block/header')
-const ethUtils = require('ethereumjs-util')
 
 describe('IPLD format resolver (local)', () => {
   let testIpfsBlock
