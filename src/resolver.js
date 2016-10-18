@@ -1,6 +1,9 @@
 'use strict'
 
+const CID = require('cids')
+const multihash = require('multihashes')
 const util = require('./util')
+
 
 exports = module.exports
 
@@ -74,26 +77,28 @@ exports.tree = (block, options) => {
   const blockHeader = util.deserialize(block.data)
   const paths = []
 
+  
+
   // external links
   paths.push({
     path: 'parent',
-    value: `@hex.cidv2.eth-block.keccak_256.${blockHeader.parentHash}`,
+    value: { '/': cidForHash(blockHeader.parentHash) },
   })
   paths.push({
     path: 'uncles',
-    value: `@hex.cidv2.eth-block-list.keccak_256.${blockHeader.uncleHash}`,
+    value: { '/': cidForHash(blockHeader.uncleHash) },
   })
   paths.push({
     path: 'transactions',
-    value: `@hex.cidv2.eth-tx-trie.keccak_256.${blockHeader.transactionsTrie}`,
+    value: { '/': cidForHash(blockHeader.transactionsTrie) },
   })
   paths.push({
     path: 'transactionReceipts',
-    value: `@hex.cidv2.eth-tx-receipt-trie.keccak_256.${blockHeader.receiptTrie}`,
+    value: { '/': cidForHash(blockHeader.receiptTrie) },
   })
   paths.push({
     path: 'state',
-    value: `@hex.cidv2.eth-state-trie.keccak_256.${blockHeader.stateRoot}`,
+    value: { '/': cidForHash(blockHeader.stateRoot) },
   })
 
   // external links as data
@@ -162,4 +167,12 @@ exports.tree = (block, options) => {
 
   return paths
 
+}
+
+function cidForHash(rawhash) {
+  return new CID({
+    version: 1,
+    codec: exports.multicodec,
+    hash: multihash.encode(rawhash, 'keccak-256'),
+  })
 }
