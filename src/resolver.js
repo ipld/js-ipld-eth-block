@@ -61,23 +61,13 @@ exports.resolve = (block, path) => {
  * are option (i.e. nestness)
  */
 
-// eth-block
-// eth-block-list (uncles)
-// eth-tx-trie
-// eth-tx-receipt-trie
-// eth-tx
-// eth-state-trie
-// eth-account
-
 exports.tree = (block, options) => {
   if (!options) {
     options = {}
   }
 
   const blockHeader = util.deserialize(block.data)
-  const paths = []
-
-  
+  const paths = []  
 
   // external links
   paths.push({
@@ -119,15 +109,15 @@ exports.tree = (block, options) => {
     value: blockHeader.receiptTrie,
   })
   paths.push({
-    path: 'authorAddress',
-    value: blockHeader.coinbase,
-  })
-  paths.push({
     path: 'stateRoot',
     value: blockHeader.stateRoot,
   })
 
   // internal data
+  paths.push({
+    path: 'authorAddress',
+    value: blockHeader.coinbase,
+  })
   paths.push({
     path: 'bloom',
     value: blockHeader.bloom,
