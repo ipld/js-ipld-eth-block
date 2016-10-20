@@ -1,9 +1,7 @@
 'use strict'
 
-const CID = require('cids')
-const multihash = require('multihashes')
 const util = require('./util')
-
+const cidForHash = require('./common').cidForHash
 
 exports = module.exports
 
@@ -72,23 +70,23 @@ exports.tree = (block, options) => {
   // external links
   paths.push({
     path: 'parent',
-    value: { '/': cidForHash(blockHeader.parentHash) },
+    value: { '/': cidForHash('eth-block', blockHeader.parentHash) },
   })
   paths.push({
     path: 'uncles',
-    value: { '/': cidForHash(blockHeader.uncleHash) },
+    value: { '/': cidForHash('eth-block-list', blockHeader.uncleHash) },
   })
   paths.push({
     path: 'transactions',
-    value: { '/': cidForHash(blockHeader.transactionsTrie) },
+    value: { '/': cidForHash('eth-tx-trie', blockHeader.transactionsTrie) },
   })
   paths.push({
     path: 'transactionReceipts',
-    value: { '/': cidForHash(blockHeader.receiptTrie) },
+    value: { '/': cidForHash('eth-tx-receipt-trie', blockHeader.receiptTrie) },
   })
   paths.push({
     path: 'state',
-    value: { '/': cidForHash(blockHeader.stateRoot) },
+    value: { '/': cidForHash('eth-state-trie', blockHeader.stateRoot) },
   })
 
   // external links as data
@@ -157,12 +155,4 @@ exports.tree = (block, options) => {
 
   return paths
 
-}
-
-function cidForHash(rawhash) {
-  return new CID({
-    version: 1,
-    codec: exports.multicodec,
-    hash: multihash.encode(rawhash, 'keccak-256'),
-  }).toString()
 }
