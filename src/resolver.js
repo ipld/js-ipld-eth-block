@@ -174,5 +174,5 @@ function cidForHash(rawhash) {
     version: 1,
     codec: exports.multicodec,
     hash: multihash.encode(rawhash, 'keccak-256'),
-  })
+  }).toString()
 }
