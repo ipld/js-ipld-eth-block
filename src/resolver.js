@@ -20,22 +20,7 @@ exports.resolve = (block, path) => {
     return { value: node, remainderPath: '' }
   }
 
-  // within scope
-
-  const tree = exports.tree(block)
-  let result
-
-  tree.forEach((item) => {
-    if (item.path === path) {
-      result = { value: item.value, remainderPath: '' }
-    }
-  })
-
-  if (result) {
-    return result
-  }
-
-  // out of scope
+  // check tree results
 
   let pathParts = path.split('/')
   let firstPart = pathParts.unshift()
