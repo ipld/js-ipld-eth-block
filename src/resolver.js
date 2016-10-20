@@ -58,7 +58,7 @@ exports.tree = (block, options) => {
     value: { '/': cidForHash('eth-block', blockHeader.parentHash) },
   })
   paths.push({
-    path: 'uncles',
+    path: 'ommers',
     value: { '/': cidForHash('eth-block-list', blockHeader.uncleHash) },
   })
   paths.push({
@@ -80,7 +80,7 @@ exports.tree = (block, options) => {
     value: blockHeader.parentHash,
   })
   paths.push({
-    path: 'uncleHash',
+    path: 'ommerHash',
     value: blockHeader.uncleHash,
   })
   paths.push({
