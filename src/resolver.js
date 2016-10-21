@@ -23,17 +23,17 @@ exports.resolve = (block, path) => {
   // check tree results
 
   let pathParts = path.split('/')
-  let firstPart = pathParts.unshift()
+  let firstPart = pathParts.shift()
   let remainderPath = pathParts.join('/')
 
-  let lookupResult = exports.tree(block).find(key => key === firstPart)
+  let treeResult = exports.tree(block).find(child => child.path === firstPart)
 
-  if (!lookupResult) {
-    throw new Error('Path not found.')
+  if (!treeResult) {
+    throw new Error('Path not found ("' + firstPart + '").')
   }
 
   return {
-    value: lookupResult,
+    value: treeResult.value,
     remainderPath: remainderPath,
   }
 
