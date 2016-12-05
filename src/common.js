@@ -1,7 +1,7 @@
 const CID = require('cids')
 const multihash = require('multihashes')
 
-exports = {
+module.exports = {
   cidForHash: cidForHash,
 }
 
