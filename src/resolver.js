@@ -67,23 +67,23 @@ exports.tree = (block, options, callback) => {
     // external links
     paths.push({
       path: 'parent',
-      value: { '/': cidForHash('eth-block', blockHeader.parentHash) },
+      value: { '/': cidForHash('eth-block', blockHeader.parentHash).toBaseEncodedString() },
     })
     paths.push({
       path: 'ommers',
-      value: { '/': cidForHash('eth-block-list', blockHeader.uncleHash) },
+      value: { '/': cidForHash('eth-block-list', blockHeader.uncleHash).toBaseEncodedString() },
     })
     paths.push({
       path: 'transactions',
-      value: { '/': cidForHash('eth-tx-trie', blockHeader.transactionsTrie) },
+      value: { '/': cidForHash('eth-tx-trie', blockHeader.transactionsTrie).toBaseEncodedString() },
     })
     paths.push({
       path: 'transactionReceipts',
-      value: { '/': cidForHash('eth-tx-receipt-trie', blockHeader.receiptTrie) },
+      value: { '/': cidForHash('eth-tx-receipt-trie', blockHeader.receiptTrie).toBaseEncodedString() },
     })
     paths.push({
       path: 'state',
-      value: { '/': cidForHash('eth-state-trie', blockHeader.stateRoot) },
+      value: { '/': cidForHash('eth-state-trie', blockHeader.stateRoot).toBaseEncodedString() },
     })
 
     // external links as data
