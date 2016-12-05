@@ -2,8 +2,8 @@
 'use strict'
 
 const expect = require('chai').expect
-const dagEthBlock = require('../src')
-const resolver = dagEthBlock.resolver
+const ipldEthBlock = require('../src')
+const resolver = ipldEthBlock.resolver
 const IpfsBlock = require('ipfs-block')
 const EthBlockHeader = require('ethereumjs-block/header')
 
@@ -28,9 +28,13 @@ describe('IPLD format resolver (local)', () => {
     nonce:            new Buffer('1500000000000000000000000000000000000000000000000000000000000000', 'hex'),
   }
 
-  before(() => {
+  before((done) => {
     const testEthBlock = new EthBlockHeader(testData)
-    testIpfsBlock = new IpfsBlock(dagEthBlock.util.serialize(testEthBlock))
+    ipldEthBlock.util.serialize(testEthBlock, (err, serialized) => {
+      if (err) return done(err)
+      testIpfsBlock = new IpfsBlock(serialized)  
+      done()
+    })
   })
 
   it('multicodec is eth-block', () => {
@@ -42,8 +46,10 @@ describe('IPLD format resolver (local)', () => {
     describe('resolver.resolve', () => {
       
       it('path within scope', () => {
-        const result = resolver.resolve(testIpfsBlock, 'number')
-        expect(result.value.toString('hex')).to.equal(testData.number.toString('hex'))
+        resolver.resolve(testIpfsBlock, 'number', (err, result) => {
+          expect(err).not.to.exist
+          expect(result.value.toString('hex')).to.equal(testData.number.toString('hex'))
+        })
       })
 
       describe.skip('path outside scope')
@@ -51,8 +57,10 @@ describe('IPLD format resolver (local)', () => {
     })
 
     it('resolver.tree', () => {
-      const paths = resolver.tree(testIpfsBlock)
-      expect(Array.isArray(paths)).to.eql(true)
+      resolver.tree(testIpfsBlock, (err, paths) => {
+        expect(err).not.to.exist
+        expect(Array.isArray(paths)).to.eql(true)  
+      })
     })
 
   })
