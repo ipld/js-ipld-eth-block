@@ -26,6 +26,7 @@ exports.resolve = (block, path, callback) => {
     let pathParts = path.split('/')
     let firstPart = pathParts.shift()
     let remainderPath = pathParts.join('/')
+    
     exports.tree(block, (err, paths) => {
       let treeResult = paths.find(child => child.path === firstPart)
       if (!treeResult) {
