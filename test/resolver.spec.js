@@ -4,6 +4,7 @@
 const expect = require('chai').expect
 const ipldEthBlock = require('../src')
 const resolver = ipldEthBlock.resolver
+const CID = require('cids')
 const IpfsBlock = require('ipfs-block')
 const EthBlockHeader = require('ethereumjs-block/header')
 
@@ -41,6 +42,19 @@ describe('IPLD format resolver (local)', () => {
     expect(resolver.multicodec).to.equal('eth-block')
   })
 
+  it('can parse the cid', (done) => {
+    const testEthBlock = new EthBlockHeader(testData)
+    ipldEthBlock.util.cid(testEthBlock, (err, cid) => {
+      if (err) return cb(err)
+      let encodedCid = cid.toBaseEncodedString()
+      let reconstructedCid = new CID(encodedCid)
+      expect(cid.version).to.equal(reconstructedCid.version)
+      expect(cid.codec).to.equal(reconstructedCid.codec)
+      expect(cid.multihash.toString('hex')).to.equal(reconstructedCid.multihash.toString('hex'))
+      done()
+    })
+  })
+
   describe('eth-block paths', () => {
     
     describe('resolver.resolve', () => {
@@ -51,8 +65,6 @@ describe('IPLD format resolver (local)', () => {
           expect(result.value.toString('hex')).to.equal(testData.number.toString('hex'))
         })
       })
-
-      describe.skip('path outside scope')
 
     })
 
