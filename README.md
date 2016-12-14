@@ -1,7 +1,7 @@
 # js-ipld-eth-block
 
 [![](https://img.shields.io/badge/made%20by-Protocol%20Labs-blue.svg?style=flat-square)](http://ipn.io)
-[![](https://img.shields.io/badge/project-ipld-blue.svg?style=flat-square)](http://github.com/ipld/ipld)
+[![](https://img.shields.io/badge/project-IPLD-blue.svg?style=flat-square)](http://github.com/ipld/ipld)
 [![](https://img.shields.io/badge/freenode-%23ipfs-blue.svg?style=flat-square)](http://webchat.freenode.net/?channels=%23ipfs)
 
 > JavaScript Implementation of the IPLD format - Ethereum Block
@@ -16,7 +16,7 @@ $ npm install ipld-eth-block
 
 TBD
 
-## Lead
+## Maintainers
 
 - [@kumavis](https://github.com/kumavis)
 
