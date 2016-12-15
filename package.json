@@ -37,5 +37,10 @@
   "bugs": {
     "url": "https://github.com/ipld/js-ipld-eth-block/issues"
   },
-  "homepage": "https://github.com/ipld/js-ipld-eth-block#readme"
+  "homepage": "https://github.com/ipld/js-ipld-eth-block#readme",
+  "contributors": [
+    "David Dias <daviddias.p@gmail.com>",
+    "Richard Littauer <richard.littauer@gmail.com>",
+    "kumavis <aaron@kumavis.me>"
+  ]
 }
