@@ -1,3 +1,10 @@
+### module specific
+
+dist
+
+
+### generic
+
 # Logs
 logs
 *.log
