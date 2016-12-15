@@ -3,7 +3,7 @@
 const EthBlockHeader = require('ethereumjs-block/header')
 const cidForHash = require('./common').cidForHash
 
-exports.deserialize = function(data, callback) {
+exports.deserialize = function (data, callback) {
   let deserialized
   try {
     deserialized = new EthBlockHeader(data)
@@ -13,7 +13,7 @@ exports.deserialize = function(data, callback) {
   callback(null, deserialized)
 }
 
-exports.serialize = function(blockHeader, callback) {
+exports.serialize = function (blockHeader, callback) {
   let serialized
   try {
     serialized = blockHeader.serialize()
@@ -23,7 +23,7 @@ exports.serialize = function(blockHeader, callback) {
   callback(null, serialized)
 }
 
-exports.cid = function(blockHeader, callback) {
+exports.cid = function (blockHeader, callback) {
   let cid
   try {
     cid = cidForHash('eth-block', blockHeader.hash())

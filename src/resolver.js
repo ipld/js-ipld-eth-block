@@ -26,8 +26,9 @@ exports.resolve = (block, path, callback) => {
     let pathParts = path.split('/')
     let firstPart = pathParts.shift()
     let remainderPath = pathParts.join('/')
-    
+
     exports.tree(block, (err, paths) => {
+      if (err) return callback(err)
       let treeResult = paths.find(child => child.path === firstPart)
       if (!treeResult) {
         let err = new Error('Path not found ("' + firstPart + '").')
@@ -36,11 +37,10 @@ exports.resolve = (block, path, callback) => {
 
       result = {
         value: treeResult.value,
-        remainderPath: remainderPath,
+        remainderPath: remainderPath
       }
       return callback(null, result)
     })
-    
   })
 }
 
@@ -60,14 +60,14 @@ exports.tree = (block, options, callback) => {
   }
 
   util.deserialize(block.data, (err, blockHeader) => {
-    if (err) return cb(err)
-    
-    const paths = []  
+    if (err) return callback(err)
+
+    const paths = []
 
     // external links
     paths.push({
       path: 'parent',
-      value: { '/': cidForHash('eth-block', blockHeader.parentHash).toBaseEncodedString() },
+      value: { '/': cidForHash('eth-block', blockHeader.parentHash).toBaseEncodedString() }
     })
     // paths.push({
     //   path: 'ommers',
@@ -89,68 +89,67 @@ exports.tree = (block, options, callback) => {
     // external links as data
     paths.push({
       path: 'parentHash',
-      value: blockHeader.parentHash,
+      value: blockHeader.parentHash
     })
     paths.push({
       path: 'ommerHash',
-      value: blockHeader.uncleHash,
+      value: blockHeader.uncleHash
     })
     paths.push({
       path: 'transactionTrieRoot',
-      value: blockHeader.transactionsTrie,
+      value: blockHeader.transactionsTrie
     })
     paths.push({
       path: 'transactionReceiptTrieRoot',
-      value: blockHeader.receiptTrie,
+      value: blockHeader.receiptTrie
     })
     paths.push({
       path: 'stateRoot',
-      value: blockHeader.stateRoot,
+      value: blockHeader.stateRoot
     })
 
     // internal data
     paths.push({
       path: 'authorAddress',
-      value: blockHeader.coinbase,
+      value: blockHeader.coinbase
     })
     paths.push({
       path: 'bloom',
-      value: blockHeader.bloom,
+      value: blockHeader.bloom
     })
     paths.push({
       path: 'difficulty',
-      value: blockHeader.difficulty,
+      value: blockHeader.difficulty
     })
     paths.push({
       path: 'number',
-      value: blockHeader.number,
+      value: blockHeader.number
     })
     paths.push({
       path: 'gasLimit',
-      value: blockHeader.gasLimit,
+      value: blockHeader.gasLimit
     })
     paths.push({
       path: 'gasUsed',
-      value: blockHeader.gasUsed,
+      value: blockHeader.gasUsed
     })
     paths.push({
       path: 'timestamp',
-      value: blockHeader.timestamp,
+      value: blockHeader.timestamp
     })
     paths.push({
       path: 'extraData',
-      value: blockHeader.extraData,
+      value: blockHeader.extraData
     })
     paths.push({
       path: 'mixHash',
-      value: blockHeader.mixHash,
+      value: blockHeader.mixHash
     })
     paths.push({
       path: 'nonce',
-      value: blockHeader.nonce,
+      value: blockHeader.nonce
     })
 
     callback(null, paths)
-
   })
 }
