@@ -81,10 +81,10 @@ exports.tree = (block, options, callback) => {
     //   path: 'transactionReceipts',
     //   value: { '/': cidForHash('eth-tx-receipt-trie', blockHeader.receiptTrie).toBaseEncodedString() },
     // })
-    // paths.push({
-    //   path: 'state',
-    //   value: { '/': cidForHash('eth-state-trie', blockHeader.stateRoot).toBaseEncodedString() },
-    // })
+    paths.push({
+      path: 'state',
+      value: { '/': cidForHash('eth-state-trie', blockHeader.stateRoot).toBaseEncodedString() },
+    })
 
     // external links as data
     paths.push({
