@@ -13,34 +13,39 @@ exports.multicodec = 'eth-block'
  */
 exports.resolve = (block, path, callback) => {
   let result
-  util.deserialize(block.data, (err, node) => {
+  util.deserialize(block.data, (err, ethBlock) => {
     if (err) return callback(err)
+    exports.resolveFromObject(ethBlock, path, callback)
+  })
+}
 
-    // root
-    if (!path || path === '/') {
-      result = { value: node, remainderPath: '' }
-      return callback(null, result)
+exports.resolveFromObject = (ethBlock, path, callback) => {
+  let result
+
+  // root
+  if (!path || path === '/') {
+    result = { value: ethBlock, remainderPath: '' }
+    return callback(null, result)
+  }
+
+  // check tree results
+  let pathParts = path.split('/')
+  let firstPart = pathParts.shift()
+  let remainderPath = pathParts.join('/')
+
+  exports.treeFromObject(ethBlock, {}, (err, paths) => {
+    if (err) return callback(err)
+    let treeResult = paths.find(child => child.path === firstPart)
+    if (!treeResult) {
+      let err = new Error('Path not found ("' + firstPart + '").')
+      return callback(err)
     }
 
-    // check tree results
-    let pathParts = path.split('/')
-    let firstPart = pathParts.shift()
-    let remainderPath = pathParts.join('/')
-
-    exports.tree(block, (err, paths) => {
-      if (err) return callback(err)
-      let treeResult = paths.find(child => child.path === firstPart)
-      if (!treeResult) {
-        let err = new Error('Path not found ("' + firstPart + '").')
-        return callback(err)
-      }
-
-      result = {
-        value: treeResult.value,
-        remainderPath: remainderPath
-      }
-      return callback(null, result)
-    })
+    result = {
+      value: treeResult.value,
+      remainderPath: remainderPath
+    }
+    return callback(null, result)
   })
 }
 
@@ -59,97 +64,100 @@ exports.tree = (block, options, callback) => {
     options = {}
   }
 
-  util.deserialize(block.data, (err, blockHeader) => {
+  util.deserialize(block.data, (err, ethBlock) => {
     if (err) return callback(err)
-
-    const paths = []
-
-    // external links
-    paths.push({
-      path: 'parent',
-      value: { '/': cidForHash('eth-block', blockHeader.parentHash).toBaseEncodedString() }
-    })
-    paths.push({
-      path: 'ommers',
-      value: { '/': cidForHash('eth-block-list', blockHeader.uncleHash).toBaseEncodedString() },
-    })
-    paths.push({
-      path: 'transactions',
-      value: { '/': cidForHash('eth-tx-trie', blockHeader.transactionsTrie).toBaseEncodedString() },
-    })
-    paths.push({
-      path: 'transactionReceipts',
-      value: { '/': cidForHash('eth-tx-receipt-trie', blockHeader.receiptTrie).toBaseEncodedString() },
-    })
-    paths.push({
-      path: 'state',
-      value: { '/': cidForHash('eth-state-trie', blockHeader.stateRoot).toBaseEncodedString() },
-    })
-
-    // external links as data
-    paths.push({
-      path: 'parentHash',
-      value: blockHeader.parentHash
-    })
-    paths.push({
-      path: 'ommerHash',
-      value: blockHeader.uncleHash
-    })
-    paths.push({
-      path: 'transactionTrieRoot',
-      value: blockHeader.transactionsTrie
-    })
-    paths.push({
-      path: 'transactionReceiptTrieRoot',
-      value: blockHeader.receiptTrie
-    })
-    paths.push({
-      path: 'stateRoot',
-      value: blockHeader.stateRoot
-    })
-
-    // internal data
-    paths.push({
-      path: 'authorAddress',
-      value: blockHeader.coinbase
-    })
-    paths.push({
-      path: 'bloom',
-      value: blockHeader.bloom
-    })
-    paths.push({
-      path: 'difficulty',
-      value: blockHeader.difficulty
-    })
-    paths.push({
-      path: 'number',
-      value: blockHeader.number
-    })
-    paths.push({
-      path: 'gasLimit',
-      value: blockHeader.gasLimit
-    })
-    paths.push({
-      path: 'gasUsed',
-      value: blockHeader.gasUsed
-    })
-    paths.push({
-      path: 'timestamp',
-      value: blockHeader.timestamp
-    })
-    paths.push({
-      path: 'extraData',
-      value: blockHeader.extraData
-    })
-    paths.push({
-      path: 'mixHash',
-      value: blockHeader.mixHash
-    })
-    paths.push({
-      path: 'nonce',
-      value: blockHeader.nonce
-    })
-
-    callback(null, paths)
+    exports.treeFromObject(ethBlock, options, callback)
   })
+}
+
+exports.treeFromObject = (ethBlock, options, callback) => {
+  const paths = []
+
+  // external links
+  paths.push({
+    path: 'parent',
+    value: { '/': cidForHash('eth-block', ethBlock.parentHash).toBaseEncodedString() }
+  })
+  paths.push({
+    path: 'ommers',
+    value: { '/': cidForHash('eth-block-list', ethBlock.uncleHash).toBaseEncodedString() },
+  })
+  paths.push({
+    path: 'transactions',
+    value: { '/': cidForHash('eth-tx-trie', ethBlock.transactionsTrie).toBaseEncodedString() },
+  })
+  paths.push({
+    path: 'transactionReceipts',
+    value: { '/': cidForHash('eth-tx-receipt-trie', ethBlock.receiptTrie).toBaseEncodedString() },
+  })
+  paths.push({
+    path: 'state',
+    value: { '/': cidForHash('eth-state-trie', ethBlock.stateRoot).toBaseEncodedString() },
+  })
+
+  // external links as data
+  paths.push({
+    path: 'parentHash',
+    value: ethBlock.parentHash
+  })
+  paths.push({
+    path: 'ommerHash',
+    value: ethBlock.uncleHash
+  })
+  paths.push({
+    path: 'transactionTrieRoot',
+    value: ethBlock.transactionsTrie
+  })
+  paths.push({
+    path: 'transactionReceiptTrieRoot',
+    value: ethBlock.receiptTrie
+  })
+  paths.push({
+    path: 'stateRoot',
+    value: ethBlock.stateRoot
+  })
+
+  // internal data
+  paths.push({
+    path: 'authorAddress',
+    value: ethBlock.coinbase
+  })
+  paths.push({
+    path: 'bloom',
+    value: ethBlock.bloom
+  })
+  paths.push({
+    path: 'difficulty',
+    value: ethBlock.difficulty
+  })
+  paths.push({
+    path: 'number',
+    value: ethBlock.number
+  })
+  paths.push({
+    path: 'gasLimit',
+    value: ethBlock.gasLimit
+  })
+  paths.push({
+    path: 'gasUsed',
+    value: ethBlock.gasUsed
+  })
+  paths.push({
+    path: 'timestamp',
+    value: ethBlock.timestamp
+  })
+  paths.push({
+    path: 'extraData',
+    value: ethBlock.extraData
+  })
+  paths.push({
+    path: 'mixHash',
+    value: ethBlock.mixHash
+  })
+  paths.push({
+    path: 'nonce',
+    value: ethBlock.nonce
+  })
+
+  callback(null, paths)
 }
