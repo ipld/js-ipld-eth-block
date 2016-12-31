@@ -1,6 +1,6 @@
 {
   "name": "ipld-eth-block",
-  "version": "2.1.1",
+  "version": "2.2.0",
   "description": "JavaScript Implementation of the IPLD format - Ethereum Block",
   "main": "src/index.js",
   "directories": {
