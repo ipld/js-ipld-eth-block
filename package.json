@@ -9,12 +9,15 @@
   "dependencies": {
     "cids": "~0.4.1",
     "ethereumjs-block": "^1.5.0",
-    "multihashes": "~0.3.3"
+    "multihashes": "~0.4.4"
   },
   "devDependencies": {
-    "ipfs-block": "~0.5.4",
-    "aegir": "^10.0.0",
-    "chai": "^3.5.0"
+    "aegir": "^11.0.0",
+    "async": "^2.1.5",
+    "chai": "^3.5.0",
+    "dirty-chai": "^1.2.2",
+    "ipfs-block": "~0.6.0",
+    "multihashing-async": "^0.4.4"
   },
   "scripts": {
     "test": "aegir-test",

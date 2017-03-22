@@ -1,12 +1,17 @@
 /* eslint-env mocha */
 'use strict'
 
-const expect = require('chai').expect
-const ipldEthBlock = require('../src')
-const resolver = ipldEthBlock.resolver
+const chai = require('chai')
+chai.use(require('dirty-chai'))
+const expect = chai.expect
 const CID = require('cids')
 const IpfsBlock = require('ipfs-block')
 const EthBlockHeader = require('ethereumjs-block/header')
+const multihashing = require('multihashing-async')
+const waterfall = require('async/waterfall')
+
+const ipldEthBlock = require('../src')
+const resolver = ipldEthBlock.resolver
 
 describe('IPLD format resolver (local)', () => {
   let testIpfsBlock
@@ -31,11 +36,16 @@ describe('IPLD format resolver (local)', () => {
 
   before((done) => {
     const testEthBlock = new EthBlockHeader(testData)
-    ipldEthBlock.util.serialize(testEthBlock, (err, serialized) => {
-      if (err) return done(err)
-      testIpfsBlock = new IpfsBlock(serialized)
-      done()
-    })
+    waterfall([
+      (cb) => ipldEthBlock.util.serialize(testEthBlock, cb),
+      (serialized, cb) => multihashing(serialized, 'keccak-256', (err, hash) => {
+        if (err) {
+          return cb(err)
+        }
+        testIpfsBlock = new IpfsBlock(serialized, new CID(hash))
+        cb()
+      })
+    ], done)
   })
 
   it('multicodec is eth-block', () => {
@@ -45,7 +55,7 @@ describe('IPLD format resolver (local)', () => {
   it('can parse the cid', (done) => {
     const testEthBlock = new EthBlockHeader(testData)
     ipldEthBlock.util.cid(testEthBlock, (err, cid) => {
-      expect(err).not.to.exist
+      expect(err).not.to.exist()
       let encodedCid = cid.toBaseEncodedString()
       let reconstructedCid = new CID(encodedCid)
       expect(cid.version).to.equal(reconstructedCid.version)
@@ -58,7 +68,7 @@ describe('IPLD format resolver (local)', () => {
   describe('resolver.resolve', () => {
     it('path within scope', () => {
       resolver.resolve(testIpfsBlock, 'number', (err, result) => {
-        expect(err).not.to.exist
+        expect(err).not.to.exist()
         expect(result.value.toString('hex')).to.equal(testData.number.toString('hex'))
       })
     })
@@ -66,7 +76,7 @@ describe('IPLD format resolver (local)', () => {
 
   it('resolver.tree', () => {
     resolver.tree(testIpfsBlock, (err, paths) => {
-      expect(err).not.to.exist
+      expect(err).not.to.exist()
       expect(Array.isArray(paths)).to.eql(true)
     })
   })
