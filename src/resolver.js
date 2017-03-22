@@ -12,7 +12,6 @@ exports.multicodec = 'eth-block'
  * throw if not possible. `block` is an IPFS Block instance (contains data + key)
  */
 exports.resolve = (block, path, callback) => {
-  let result
   util.deserialize(block.data, (err, ethBlock) => {
     if (err) return callback(err)
     exports.resolveFromObject(ethBlock, path, callback)
@@ -80,19 +79,19 @@ exports.treeFromObject = (ethBlock, options, callback) => {
   })
   paths.push({
     path: 'ommers',
-    value: { '/': cidForHash('eth-block-list', ethBlock.uncleHash).toBaseEncodedString() },
+    value: { '/': cidForHash('eth-block-list', ethBlock.uncleHash).toBaseEncodedString() }
   })
   paths.push({
     path: 'transactions',
-    value: { '/': cidForHash('eth-tx-trie', ethBlock.transactionsTrie).toBaseEncodedString() },
+    value: { '/': cidForHash('eth-tx-trie', ethBlock.transactionsTrie).toBaseEncodedString() }
   })
   paths.push({
     path: 'transactionReceipts',
-    value: { '/': cidForHash('eth-tx-receipt-trie', ethBlock.receiptTrie).toBaseEncodedString() },
+    value: { '/': cidForHash('eth-tx-receipt-trie', ethBlock.receiptTrie).toBaseEncodedString() }
   })
   paths.push({
     path: 'state',
-    value: { '/': cidForHash('eth-state-trie', ethBlock.stateRoot).toBaseEncodedString() },
+    value: { '/': cidForHash('eth-state-trie', ethBlock.stateRoot).toBaseEncodedString() }
   })
 
   // external links as data
