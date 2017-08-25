@@ -1,3 +1,10 @@
+# Deprecation Notice
+
+**This repo has been deprecated in favour of [js-ipld-ethereum](https://github.com/ipld/js-ipld-ethereum)**
+
+----------------------------------------------------------------------
+----------------------------------------------------------------------
+
 # js-ipld-eth-block
 
 [![](https://img.shields.io/badge/made%20by-Protocol%20Labs-blue.svg?style=flat-square)](http://ipn.io)
